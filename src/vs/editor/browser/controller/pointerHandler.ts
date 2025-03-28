@@ -27,6 +27,7 @@ export class PointerEventHandler extends MouseHandler {
 
 		this._register(Gesture.addTarget(this.viewHelper.linesContentDomNode));
 		this._register(dom.addDisposableListener(this.viewHelper.linesContentDomNode, EventType.Tap, (e) => this.onTap(e)));
+		this._register(dom.addDisposableListener(this.viewHelper.linesContentDomNode, EventType.LongPress, (e) => this.onLongPress(e)));
 		this._register(dom.addDisposableListener(this.viewHelper.linesContentDomNode, EventType.Change, (e) => this.onChange(e)));
 		this._register(dom.addDisposableListener(this.viewHelper.linesContentDomNode, EventType.Contextmenu, (e: MouseEvent) => this._onContextMenu(new EditorMouseEvent(e, false, this.viewHelper.viewDomNode), false)));
 
@@ -61,6 +62,16 @@ export class PointerEventHandler extends MouseHandler {
 		event.preventDefault();
 		this.viewHelper.focusTextArea();
 		this._dispatchGesture(event, /*inSelectionMode*/false);
+	}
+
+	private onLongPress(event: GestureEvent): void {
+		if (!event.initialTarget || !this.viewHelper.linesContentDomNode.contains(<any>event.initialTarget)) {
+			return;
+		}
+
+		event.preventDefault();
+		this.viewHelper.focusTextArea();
+		this._dispatchGesture(event, /*inSelectionMode*/true);
 	}
 
 	private onChange(event: GestureEvent): void {

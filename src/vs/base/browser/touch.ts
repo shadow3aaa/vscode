@@ -15,6 +15,7 @@ export namespace EventType {
 	export const Change = '-monaco-gesturechange';
 	export const Start = '-monaco-gesturestart';
 	export const End = '-monaco-gesturesend';
+	export const LongPress = '-monaco-gesturelongpress';
 	export const Contextmenu = '-monaco-gesturecontextmenu';
 }
 
@@ -203,7 +204,16 @@ export class Gesture extends Disposable {
 				&& Math.abs(data.initialPageX - data.rollingPageX.at(-1)!) < 30
 				&& Math.abs(data.initialPageY - data.rollingPageY.at(-1)!) < 30) {
 
-				const evt = this.newGestureEvent(EventType.Contextmenu, data.initialTarget);
+				// 区分编辑器内容区域和其他区域
+				let isEditorContent = false;
+				if (data.initialTarget instanceof Element) {
+					isEditorContent = data.initialTarget.classList.contains('lines-content');
+				}
+
+				const evt = this.newGestureEvent(
+					isEditorContent ? EventType.LongPress : EventType.Contextmenu,
+					data.initialTarget
+				);
 				evt.pageX = data.rollingPageX.at(-1)!;
 				evt.pageY = data.rollingPageY.at(-1)!;
 				this.dispatchEvent(evt);

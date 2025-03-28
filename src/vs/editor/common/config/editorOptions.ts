@@ -51,6 +51,11 @@ export const enum EditorAutoIndentStrategy {
  */
 export interface IEditorOptions {
 	/**
+	 * 是否自动处理移动端长按选择行为
+	 * 默认值: true
+	 */
+	autoHandleLongPress?: boolean;
+	/**
 	 * This editor is used inside a diff editor.
 	 */
 	inDiffEditor?: boolean;
